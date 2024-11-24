@@ -10,11 +10,17 @@ function Manager() {
     const ref = useRef()
     const passwordRef = useRef()
 
+    const getPasswords = async () => {
+        let req = await fetch("http://localhost:3000/")
+        let password = await req.json()
+        console.log(password)
+        setpasswordArray(password)
+
+    }
     useEffect(() => {
-        let password = localStorage.getItem("passwords");
-        if (password) {
-            setpasswordArray(JSON.parse(password))
-        }
+        getPasswords()
+
+
     }, [])
 
 
@@ -32,13 +38,21 @@ function Manager() {
 
     }
 
-    const savePassword = () => {
-        if(form.site.length>3 && form.username.length>3 && form.password.length>3 ){
+    const savePassword = async () => {
+        if (form.site.length > 3 && form.username.length > 3 && form.password.length > 3) {
 
-            setpasswordArray([...passwordArray, {...form,id:uuidv4()}])
-            localStorage.setItem("passwords", JSON.stringify([...passwordArray, {...form,id:uuidv4()}]))
-            console.log(...passwordArray, form);
-            toast("Password saved!!", {
+
+            if (form.id) {
+
+                await fetch("http://localhost:3000/", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: form.id }) })
+            }
+
+            setpasswordArray([...passwordArray, { ...form, id: uuidv4() }])
+            await fetch("http://localhost:3000/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, id: uuidv4() }) })
+
+
+            setform({ site: "", username: "", password: "" })
+            toast('Password saved!', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -49,17 +63,22 @@ function Manager() {
                 theme: "dark",
             });
         }
-        else{
-            toast("Password not saved!!");
+        else {
+            toast('Error: Password not saved!');
         }
-    }
-    const deletePassword = (id) => {
-        console.log("Deleting password with",id)
-        const c = confirm("Do you want to Delete!!")
-        if(c){
 
-            setpasswordArray(passwordArray.filter(item=>item.id!==id) )
-            localStorage.setItem("passwords", JSON.stringify(passwordArray.filter(item=>item.id!==id)))
+    }
+    const deletePassword = async (id) => {
+        console.log("Deleting password with", id)
+        const c = confirm("Do you want to Delete!!")
+        if (c) {
+
+            setpasswordArray(passwordArray.filter(item => item.id !== id))
+            let res = await fetch("http://localhost:3000/", {
+                method: "DELETE", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id })
+            })
+            // localStorage.setItem("passwords", JSON.stringify(passwordArray.filter(item => item.id !== id)))
             console.log(...passwordArray, form);
             toast("Deleted successfully!!", {
                 position: "top-right",
@@ -74,13 +93,14 @@ function Manager() {
         }
     }
 
-    const editPassword = (id) => {
-        console.log("Edit password with",id)
+    const editPassword = async (id) => {
+        console.log("Edit password with", id)
         const c = confirm("Do you want to Edit!!")
-        if(c){
+        if (c) {
 
-            setform(passwordArray.filter(i=>i.id===id)[0])
-            setpasswordArray(passwordArray.filter(item=>item.id!==id) )
+            setform({ ...passwordArray.filter(i => i.id === id)[0], id: id })
+            setpasswordArray(passwordArray.filter(item => item.id !== id))
+
         }
     }
 
@@ -114,16 +134,11 @@ function Manager() {
                 draggable
                 pauseOnHover
                 theme="light"
-
-
             />
             {/* Same as */}
             <ToastContainer />
-           
 
-
-            <div className='p-2 min-h-[90vh] md:mycontainer'>
-
+            <div className='p-2 min-h-[86.85vh] md:mycontainer'>
                 <h1 className='text-4xl font-bold text-center'> <span className='text-green-500'>&lt;</span>
                     Pass
                     <span className='text-green-500'>Man/&gt;</span></h1>
@@ -149,7 +164,7 @@ function Manager() {
                 <div className="passwords">
                     <h2 className='py-4 font-bold text-xl'>Your Passwords</h2>
                     {passwordArray.length === 0 && <div>No Passwords to show</div>}
-                    {passwordArray.length != 0 && <table className="table-auto w-full rounded-md overflow-hidden mb-10">
+                    {passwordArray.length != 0 && <table className="table-auto w-full rounded-md overflow-hidden">
                         <thead className='bg-green-800 text-white '>
                             <tr>
                                 <th className='py-2'>Site </th>
@@ -167,11 +182,11 @@ function Manager() {
 
 
                                         <span className='flex gap-2 justify-center items-center'  >
-                                            <a href={item.site}>
+                                            <a href="{item.site}">
 
                                                 {item.site}
                                             </a>
-                                        
+
                                             <img className='w-5 cursor-pointer' onClick={() => copyText(item.site)} src="icons/copy.png" alt="" />
 
                                         </span>
@@ -187,15 +202,15 @@ function Manager() {
                                     </td>
                                     <td className='py-2 p-1 border border-white text-center'>
                                         <span className='flex gap-2 justify-center items-center'>
-                                            {item.password}
+                                            {"*".repeat(item.password.length)}
                                             <img onClick={() => copyText(item.password)} className='w-5 m-1 cursor-pointer' src="icons/copy.png" alt="" />
                                         </span>
                                     </td>
                                     <td className='py-2 p-1 border border-white text-center'>
-                                    <span className='flex gap-2 justify-center items-center'>
-                                            
-                                            <img onClick={()=>{editPassword(item.id)}}  className='w-5 mx-1 cursor-pointer' src="icons/pencil.png" alt="" />
-                                            <img onClick={()=>{deletePassword(item.id)}} className='w-5 mx-1 cursor-pointer' src="icons/bin.png" alt="" />
+                                        <span className='flex flex-row gap-2 justify-center items-center'>
+
+                                            <img onClick={() => { editPassword(item.id) }} className=' w-5 mx-1 cursor-pointer' src="icons/pencil.png" alt="" />
+                                            <img onClick={() => { deletePassword(item.id) }} className='w-5 mx-1 cursor-pointer' src="icons/bin.png" alt="" />
                                         </span>
                                     </td>
                                 </tr>
@@ -206,7 +221,7 @@ function Manager() {
                     }
                 </div>
             </div>
-            
+
         </>
 
     )
