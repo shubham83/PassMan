@@ -11,9 +11,17 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      <Manager />
-      <Footer />
+    <Navbar/>
+
+
+
+    <Manager/>
+
+
+
+  
+
+    <Footer/>
     </>
   )
 }
