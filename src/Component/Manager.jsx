@@ -3,6 +3,8 @@ import { useRef } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { v4 as uuidv4 } from 'uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faCopy,faPenToSquare,faTrash } from '@fortawesome/free-solid-svg-icons';
 
 function Manager() {
     const [form, setform] = useState({ site: "", username: "", password: "" })
@@ -187,8 +189,10 @@ function Manager() {
                                                 {item.site}
                                             </a>
 
-                                            <img className='w-5 cursor-pointer' onClick={() => copyText(item.site)} src="icons/copy.png" alt="" />
+                                            <div onClick={() => copyText(item.site)} className='cursor-pointer'>
 
+                                                <FontAwesomeIcon icon={faCopy} size="xl" />
+                                            </div>
                                         </span>
 
 
@@ -196,21 +200,33 @@ function Manager() {
                                     <td className='py-2 p-1 border border-white text-center'>
                                         <span className='flex gap-2 justify-center items-center'>
                                             {item.username}
-                                            <img onClick={() => copyText(item.username)} className='w-5 cursor-pointer' src="icons/copy.png" alt="" />
-                                        </span>
+                                            <div onClick={() => copyText(item.site)} className='cursor-pointer'>
+
+                                                <FontAwesomeIcon icon={faCopy} size="xl" />
+                                            </div>                                        </span>
 
                                     </td>
                                     <td className='py-2 p-1 border border-white text-center'>
                                         <span className='flex gap-2 justify-center items-center'>
                                             {"*".repeat(item.password.length)}
-                                            <img onClick={() => copyText(item.password)} className='w-5 m-1 cursor-pointer' src="icons/copy.png" alt="" />
-                                        </span>
+                                            <div onClick={() => copyText(item.site)} className='cursor-pointer'>
+
+                                                <FontAwesomeIcon icon={faCopy} size="xl" />
+                                            </div>                                        </span>   
                                     </td>
                                     <td className='py-2 p-1 border border-white text-center'>
                                         <span className='flex flex-row gap-2 justify-center items-center'>
 
-                                            <img onClick={() => { editPassword(item.id) }} className=' w-5 mx-1 cursor-pointer' src="icons/pencil.png" alt="" />
-                                            <img onClick={() => { deletePassword(item.id) }} className='w-5 mx-1 cursor-pointer' src="icons/bin.png" alt="" />
+                                            <div onClick={() => { editPassword(item.id) }}>
+
+                                            <FontAwesomeIcon icon={faPenToSquare} size="xl" />
+                                            </div>
+
+                                            
+                                            <div onClick={() => { deletePassword(item.id) }}> 
+
+                                            <FontAwesomeIcon icon={faTrash} size="xl" />
+                                            </div>
                                         </span>
                                     </td>
                                 </tr>
