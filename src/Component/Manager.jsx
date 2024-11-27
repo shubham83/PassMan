@@ -11,7 +11,7 @@ function Manager() {
     const passwordRef = useRef()
 
     const getPasswords = async () => {
-        let req = await fetch("http://localhost:3000/")
+        let req = await fetch("https://passman-backend.onrender.com/")
         let password = await req.json()
         console.log(password)
         setpasswordArray(password)
@@ -44,11 +44,11 @@ function Manager() {
 
             if (form.id) {
 
-                await fetch("http://localhost:3000/", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: form.id }) })
+                await fetch("https://passman-backend.onrender.com/", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: form.id }) })
             }
 
             setpasswordArray([...passwordArray, { ...form, id: uuidv4() }])
-            await fetch("http://localhost:3000/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, id: uuidv4() }) })
+            await fetch("https://passman-backend.onrender.com/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, id: uuidv4() }) })
 
 
             setform({ site: "", username: "", password: "" })
@@ -74,7 +74,7 @@ function Manager() {
         if (c) {
 
             setpasswordArray(passwordArray.filter(item => item.id !== id))
-            let res = await fetch("http://localhost:3000/", {
+            let res = await fetch("https://passman-backend.onrender.com/", {
                 method: "DELETE", headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id })
             })

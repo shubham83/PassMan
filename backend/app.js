@@ -1,21 +1,18 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const dotenv = require('dotenv').config()
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://Admin:shubhampoddar@cluster0.ga5afas.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.MONGO_URI;
 
 const client = new MongoClient(uri);
 
 const dbName = 'PassMan';
-
-
-
-
-const app = express()
+const app = express() 
 const port = 3000
 app.use(cors())
 app.use(bodyParser.json())
-require('dotenv').config()
+
 
 client.connect();
 
@@ -42,5 +39,5 @@ app.delete('/', async (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening on port http://localhost:${port}`)
+    console.log(`Server is Online`)
 })

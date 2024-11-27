@@ -7,7 +7,7 @@ import Footer from './Component/Footer'
 
 
 function App() {
-  const notify = () => toast("Wow so easy!");
+ 
 
   return (
     <>
